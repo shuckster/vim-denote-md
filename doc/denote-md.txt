@@ -1,0 +1,148 @@
+*denote-md.txt*  Denote-md Vim Plugin Documentation
+
+==============================================================================
+CONTENTS                                                     *denote-md-contents*
+
+  1. Introduction ........................................... |denote-md-introduction|
+  2. Commands ............................................... |denote-md-commands|
+  3. Detailed Command Information ........................... |denote-md-command-info|
+  4. Installation ........................................... |denote-md-installation|
+  5. Configuration .......................................... |denote-md-configuration|
+  6. Examples ............................................... |denote-md-examples|
+  7. Environment Variables .................................. |denote-md-env-vars|
+  8. License ................................................ |denote-md-license|
+  9. Author ................................................. |denote-md-author|
+
+==============================================================================
+1. INTRODUCTION                                             *denote-md-introduction*
+
+Denote-md is a Vim plugin designed to facilitate the management and creation
+of notes in Markdown format, integrating closely with a Bash script for
+enhanced functionality. It enables users to perform a range of note-related
+operations directly within the Vim environment.
+
+For more details on Denote:
+- https://protesilaos.com/emacs/denote
+
+==============================================================================
+2. COMMANDS                                                 *denote-md-commands*
+
+Denote-md provides the following Vim commands:
+
+  - :DenoteNewNote
+  - :DenoteChangeTitle
+  - :DenoteChangeTags
+  - :DenotePutNotesListForTags
+  - :DenotePutNoteActionsForTags
+  - :DenotePutNoteBacklinksForBuffer
+  - :DenoteFollowLink
+
+==============================================================================
+3. DETAILED COMMAND INFORMATION                             *denote-md-command-info*
+
+:DenoteNewNote
+    Creates a new note. The note's filename and front matter are generated
+    based on the current date and time.
+
+:DenoteChangeTitle
+    Changes the title of the note in the current buffer. Ensure your changes
+    are saved before running this command.
+
+:DenoteChangeTags
+    Changes the tags of the note in the current buffer. Be sure to save any
+    changes to your buffer before executing this command.
+
+:DenotePutNotesListForTags
+    Lists all note filenames at the cursor position matching the specified
+    tags. Tags should be comma-separated when prompted. Prefixing a tag with
+    "-" excludes notes with that tag from the results.
+
+:DenotePutNoteActionsForTags
+    Lists all note filenames at the cursor position matching the specified
+    tags, extracting and displaying "actions" defined as text under a Markdown
+    header "# Actions" down to the next header or EOF. Tags input follows the
+    same format as :DenotePutNotesListForTags.
+
+:DenotePutNoteBacklinksForBuffer
+    Lists all note filenames linking back to the note in the current buffer,
+    facilitating the understanding of note interconnections.
+
+:DenoteFollowLink
+    Follows the [[denote:...]] link under the cursor to its corresponding note,
+    opening it in the current buffer.
+
+==============================================================================
+4. INSTALLATION                                             *denote-md-installation*
+
+To install denote-md, clone the GitHub repository to your Vim plugin directory.
+Ensure the accompanying Bash script is within your PATH and executable.
+
+Repository links:
+- Vim Plugin: https://github.com/shuckster/vim-denote-md
+- Bash Script: https://github.com/shuckster/denote-md
+
+==============================================================================
+5. CONFIGURATION                                            *denote-md-configuration*
+
+To configure denote-md in Vim, set the path to the denote-md script in your
+.vimrc or init.vim file and define any remaps you require for the plugin's
+commands:
+
+    " Define where your denote-md script is located
+    let g:denote_md_script = $DENOTE_MD_SCRIPT_PATH . 'denote-md.sh'
+
+    " Add your denote-md remaps
+    if filereadable(g:denote_md_script)
+       nnoremap <Leader>dn :DenoteNewNote<CR>
+       nnoremap <Leader>dt :DenoteChangeTitle<CR>
+       nnoremap <Leader>dg :DenoteChangeTags<CR>
+       nnoremap <Leader>dl :DenotePutNotesListForTags<CR>
+       nnoremap <Leader>da :DenotePutNoteActionsForTags<CR>
+       nnoremap <Leader>db :DenotePutNoteBacklinksForBuffer<CR>
+       nnoremap <Leader>df :DenoteFollowLink<CR>
+    endif
+
+This setup requires the DENOTE_MD_SCRIPT_PATH environment variable to be set
+to the directory containing the denote-md.sh script.
+
+==============================================================================
+6. EXAMPLES                                                 *denote-md-examples*
+
+The following is an example of setting environment variables for denote-md and
+using the plugin in Vim:
+
+1. Set the environment variables in your shell configuration file (e.g., .bashrc):
+
+    export DENOTE_MD_SCRIPT_PATH="/path/containing/denote-md.sh/"
+    export DENOTE_MD_NOTES_PATH="/path/to/users/notes/"
+
+2. Use the configured key mappings within Vim to manage your notes effectively.
+
+==============================================================================
+7. ENVIRONMENT VARIABLES                                    *denote-md-env-vars*
+
+denote-md and its accompanying Bash script use the following environment variables:
+
+- DENOTE_MD_SCRIPT_PATH: Specifies the path to the denote-md.sh script. Include
+  the trailing slash.
+- DENOTE_MD_NOTES_PATH: Defines the path to the directory where your notes are
+  stored. Include the trailing slash for consistency.
+
+These variables must be set in your environment to ensure proper operation of
+the denote-md Vim plugin and Bash script.
+
+==============================================================================
+8. LICENSE                                                  *denote-md-license*
+
+The denote-md plugin is distributed under a license specified in the GitHub
+repository. Please refer to the LICENSE file for more information.
+
+==============================================================================
+9. AUTHOR                                                   *denote-md-author*
+
+Denote-md was developed by Conan Theobald, with the original Denote methodology
+created by Protesilaos Stavrou.
+
+==============================================================================
+
+vim:tw=78:ts=8:ft=help:norl:
