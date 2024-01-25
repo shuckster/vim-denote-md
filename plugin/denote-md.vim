@@ -2,17 +2,9 @@
 " Maintainer:   Conan Theobald <https://github.com/shuckster/vim-denote-md>
 " Version:      1.0.0
 
-" Define the folder where your scripts are located
-let g:denote_shell_script = $DENOTE_MD_SCRIPT_PATH . 'denote.sh'
-
-if filereadable(g:denote_shell_script)
-   nnoremap <Leader>dn :call DenoteNewNote()<CR>
-   nnoremap <Leader>dt :call DenoteChangeTitle()<CR>
-   nnoremap <Leader>dg :call DenoteChangeTags()<CR>
-   nnoremap <Leader>dl :call DenotePutNotesListForTags()<CR>
-   nnoremap <Leader>da :call DenotePutNoteActionsForTags()<CR>
-   nnoremap <Leader>db :call DenotePutNoteBacklinksForBuffer()<CR>
-   nnoremap <Leader>df :call DenoteFollowLink()<CR>
+" Define a default value for g:denote_shell_script
+if !exists('g:denote_shell_script')
+    let g:denote_shell_script = '~/dotfiles/shell/denote-md.sh'
 endif
 
 function! s:BuildDenoteCommand(...) abort
@@ -226,6 +218,14 @@ function! s:InspectLine(identifier, matchLine, matchCol)
             \ })
    call setpos('.', l:save_cursor)
 endfunction
+
+command! DenoteNewNote call s:DenoteNewNote()
+command! DenoteChangeTitle call s:DenoteChangeTitle()
+command! DenoteChangeTags call s:DenoteChangeTags()
+command! DenotePutNotesListForTags call s:DenotePutNotesListForTags()
+command! DenotePutNoteActionsForTags call s:DenotePutNoteActionsForTags()
+command! DenotePutNoteBacklinksForBuffer call s:DenotePutNoteBacklinksForBuffer()
+command! DenoteFollowLink call s:DenoteFollowLink()
 
 " Set up an autocommand to call MaybeInspectLine on CursorHold
 augroup HoverInspect
