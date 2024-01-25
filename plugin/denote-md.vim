@@ -193,7 +193,7 @@ function! s:MaybeInspectLine()
    for l:match in l:matches
       if l:col >= l:match['start'] && l:col < l:match['end']
          let l:identifier = matchstr(l:line, '\d\{8\}T\d\{6\}', l:match['start'])
-         call InspectLine(l:identifier, line('.'), l:match['start'] + 1)
+         call s:InspectLine(l:identifier, line('.'), l:match['start'] + 1)
          return
       endif
    endfor
@@ -202,7 +202,7 @@ endfunction
 function! s:InspectLine(identifier, matchLine, matchCol)
    let l:save_cursor = getcurpos()
    call cursor(a:matchLine, a:matchCol)
-   let l:info = DenoteTitleFromIdentifier(a:identifier)
+   let l:info = s:DenoteTitleFromIdentifier(a:identifier)
    if !has('patch-8.1.2269') || has('nvim')
       echo l:info
       call setpos('.', l:save_cursor)
@@ -226,9 +226,10 @@ command! DenotePutNotesListForTags call s:DenotePutNotesListForTags()
 command! DenotePutNoteActionsForTags call s:DenotePutNoteActionsForTags()
 command! DenotePutNoteBacklinksForBuffer call s:DenotePutNoteBacklinksForBuffer()
 command! DenoteFollowLink call s:DenoteFollowLink()
+command! MaybeInspectLine call s:MaybeInspectLine()
 
 " Set up an autocommand to call MaybeInspectLine on CursorHold
 augroup HoverInspect
    autocmd!
-   autocmd CursorHold * call s:MaybeInspectLine()
+   autocmd CursorHold * MaybeInspectLine
 augroup END
