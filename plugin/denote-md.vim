@@ -15,7 +15,7 @@ if filereadable(g:denote_shell_script)
    nnoremap <Leader>df :call DenoteFollowLink()<CR>
 endif
 
-function! BuildDenoteCommand(...) abort
+function! s:BuildDenoteCommand(...) abort
    let l:action = a:1
    let l:escapedArgs = map(copy(a:000[1:]), 'shellescape(v:val)')
    let l:args = join(l:escapedArgs, ' ')
@@ -23,16 +23,16 @@ function! BuildDenoteCommand(...) abort
    return l:cmd
 endfunction
 
-function! DenoteListAvailableTags() abort
-   let l:allTags = BuildDenoteCommand('list tags')
+function! s:DenoteListAvailableTags() abort
+   let l:allTags = s:BuildDenoteCommand('list tags')
    echo "Available tags: " . l:allTags
 endfunction
 
-function! DenoteNewNote() abort
-   call DenoteListAvailableTags()
+function! s:DenoteNewNote() abort
+   call s:DenoteListAvailableTags()
    let l:tagsFromUser = input('New note, enter tags: ')
    let l:titleFromUser = input('New note, enter title: ')
-   let l:cmd = BuildDenoteCommand('new', l:tagsFromUser, l:titleFromUser)
+   let l:cmd = s:BuildDenoteCommand('new', l:tagsFromUser, l:titleFromUser)
    let l:noteFile = substitute(system(l:cmd), '\n\+$', '', '')
    if filereadable(l:noteFile)
       execute 'split ' . fnameescape(l:noteFile)
@@ -43,46 +43,46 @@ function! DenoteNewNote() abort
    endif
 endfunction
 
-function! DenotePutNotesListForTags() abort
-   call DenoteListAvailableTags()
+function! s:DenotePutNotesListForTags() abort
+   call s:DenoteListAvailableTags()
    let l:userTags = input('Enter tags: ')
-   let l:cmd = BuildDenoteCommand('list notes', l:userTags)
+   let l:cmd = s:BuildDenoteCommand('list notes', l:userTags)
    let l:noteList = system(l:cmd)
    let l:cursorLine = line('.')
    let l:noteLines = split(l:noteList, '\n')
    call append(l:cursorLine, l:noteLines)
 endfunction
 
-function! DenotePutNoteActionsForTags() abort
-   call DenoteListAvailableTags()
+function! s:DenotePutNoteActionsForTags() abort
+   call s:DenoteListAvailableTags()
    let l:userTags = input('Enter tags: ')
-   let l:cmd = BuildDenoteCommand('list actions', l:userTags)
+   let l:cmd = s:BuildDenoteCommand('list actions', l:userTags)
    let l:actionList = system(l:cmd)
    let l:cursorLine = line('.')
    let l:actionLines = split(l:actionList, '\n')
    call append(l:cursorLine, l:actionLines)
 endfunction
 
-function! IsValidDenoteFilename() abort
+function! s:IsValidDenoteFilename() abort
    let l:filename = expand('%:t')
    let l:pattern = '^\d\{8\}T\d\{6\}--\zs.*\ze__.*\.md$'
    return l:filename =~ l:pattern
 endfunction
 
-function! DenotePutNoteBacklinksForBuffer() abort
-   if !IsValidDenoteFilename()
+function! s:DenotePutNoteBacklinksForBuffer() abort
+   if !s:IsValidDenoteFilename()
       echo "Invalid filename format."
       return
    endif
    let l:bufFilename = expand('%:p')
-   let l:cmd = BuildDenoteCommand('list backlinks', l:bufFilename)
+   let l:cmd = s:BuildDenoteCommand('list backlinks', l:bufFilename)
    let l:actionList = system(l:cmd)
    let l:cursorLine = line('.')
    let l:actionLines = split(l:actionList, '\n')
    call append(l:cursorLine, l:actionLines)
 endfunction
 
-function! DenoteValueFromFrontMatter(key) abort
+function! s:DenoteValueFromFrontMatter(key) abort
    let l:value = ''
    let l:inFrontMatter = 0
    for l:line in getline(1, '$')
@@ -96,7 +96,7 @@ function! DenoteValueFromFrontMatter(key) abort
    return l:value
 endfunction
 
-function! DenoteReplaceBuffer(newFilename) abort
+function! s:DenoteReplaceBuffer(newFilename) abort
    if !filereadable(a:newFilename)
       echo "Error: The new file does not exist: " . a:newFilename
       return
@@ -110,56 +110,56 @@ function! DenoteReplaceBuffer(newFilename) abort
    endif
 endfunction
 
-function! DenoteChangeTitle() abort
-   if !IsValidDenoteFilename()
+function! s:DenoteChangeTitle() abort
+   if !s:IsValidDenoteFilename()
       echo "Invalid filename format."
       return
    endif
-   let l:currentTitle = DenoteValueFromFrontMatter('title')
+   let l:currentTitle = s:DenoteValueFromFrontMatter('title')
    let l:currentTitle = matchstr(l:currentTitle, '"\zs.*\ze"')
    let l:newTitle = input('Enter new title: ', l:currentTitle)
    let l:filename = expand('%:p')
-   let l:cmd = BuildDenoteCommand('replace title', l:newTitle, l:filename)
+   let l:cmd = s:BuildDenoteCommand('replace title', l:newTitle, l:filename)
    let l:newFilename = substitute(system(l:cmd), '\n\+$', '', '')
-   call DenoteReplaceBuffer(l:newFilename)
+   call s:DenoteReplaceBuffer(l:newFilename)
 endfunction
 
-function! DenoteChangeTags() abort
-   if !IsValidDenoteFilename()
+function! s:DenoteChangeTags() abort
+   if !s:IsValidDenoteFilename()
       echo "Invalid filename format."
       return
    endif
-   let l:currentTags = DenoteValueFromFrontMatter('tags')
+   let l:currentTags = s:DenoteValueFromFrontMatter('tags')
    let l:currentTags = matchstr(l:currentTags, '\[\zs.*\ze\]')
    let l:currentTags = substitute(l:currentTags, '"', '', 'g')
    let l:currentTags = substitute(l:currentTags, '\s', '', 'g')
    let l:tagsFromUser = input('Enter new tags: ', l:currentTags)
    let l:newTags = join(split(l:tagsFromUser, '\s*,\s*'), ',')
    let l:bufFilename = expand('%:p')
-   let l:cmd = BuildDenoteCommand('replace tags', l:newTags, l:bufFilename)
+   let l:cmd = s:BuildDenoteCommand('replace tags', l:newTags, l:bufFilename)
    let l:newFilename = substitute(system(l:cmd), '\n\+$', '', '')
-   call DenoteReplaceBuffer(l:newFilename)
+   call s:DenoteReplaceBuffer(l:newFilename)
 endfunction
 
-function! DenoteFileNameFromIdentifier(identifier) abort
-   let l:cmd = BuildDenoteCommand('get filename', a:identifier)
+function! s:DenoteFileNameFromIdentifier(identifier) abort
+   let l:cmd = s:BuildDenoteCommand('get filename', a:identifier)
    let l:filename = substitute(system(l:cmd), '\n\+$', '', '')
    return l:filename
 endfunction
 
-function! DenoteTitleFromFileName(filename) abort
-   let l:cmd = BuildDenoteCommand('get title', a:filename)
+function! s:DenoteTitleFromFileName(filename) abort
+   let l:cmd = s:BuildDenoteCommand('get title', a:filename)
    let l:title = substitute(system(l:cmd), '\n\+$', '', '')
    return l:title
 endfunction
 
-function! DenoteTitleFromIdentifier(identifier) abort
-   let l:filename = DenoteFileNameFromIdentifier(a:identifier)
-   let l:title = DenoteTitleFromFileName(l:filename)
+function! s:DenoteTitleFromIdentifier(identifier) abort
+   let l:filename = s:DenoteFileNameFromIdentifier(a:identifier)
+   let l:title = s:DenoteTitleFromFileName(l:filename)
    return l:title
 endfunction
 
-function! FindPatternMatches(pattern, line)
+function! s:FindPatternMatches(pattern, line)
    let l:matches = []
    let l:start_pos = -1
    while match(a:line, a:pattern, l:start_pos + 1) != -1
@@ -170,18 +170,18 @@ function! FindPatternMatches(pattern, line)
    return l:matches
 endfunction
 
-function! DenoteFollowLink()
-   if !IsValidDenoteFilename()
+function! s:DenoteFollowLink()
+   if !s:IsValidDenoteFilename()
       return
    endif
    let l:pattern = '\[\[denote:\(\d\{8\}T\d\{6\}\)\]\]'
    let l:line = getline('.')
    let l:col = col('.') - 1
-   let l:matches = FindPatternMatches(l:pattern, l:line)
+   let l:matches = s:FindPatternMatches(l:pattern, l:line)
    for l:match in l:matches
       if l:col >= l:match['start'] && l:col < l:match['end']
          let l:identifier = matchstr(l:line, '\d\{8\}T\d\{6\}', l:match['start'])
-         let l:filename = DenoteFileNameFromIdentifier(l:identifier)
+         let l:filename = s:DenoteFileNameFromIdentifier(l:identifier)
          if l:filename != ''
             execute 'edit ' . l:filename
          endif
@@ -190,14 +190,14 @@ function! DenoteFollowLink()
    endfor
 endfunction
 
-function! MaybeInspectLine()
-   if !IsValidDenoteFilename()
+function! s:MaybeInspectLine()
+   if !s:IsValidDenoteFilename()
       return
    endif
    let l:pattern = '\[\[denote:\(\d\{8\}T\d\{6\}\)\]\]'
    let l:line = getline('.')
    let l:col = col('.') - 1
-   let l:matches = FindPatternMatches(l:pattern, l:line)
+   let l:matches = s:FindPatternMatches(l:pattern, l:line)
    for l:match in l:matches
       if l:col >= l:match['start'] && l:col < l:match['end']
          let l:identifier = matchstr(l:line, '\d\{8\}T\d\{6\}', l:match['start'])
@@ -207,7 +207,7 @@ function! MaybeInspectLine()
    endfor
 endfunction
 
-function! InspectLine(identifier, matchLine, matchCol)
+function! s:InspectLine(identifier, matchLine, matchCol)
    let l:save_cursor = getcurpos()
    call cursor(a:matchLine, a:matchCol)
    let l:info = DenoteTitleFromIdentifier(a:identifier)
@@ -230,5 +230,5 @@ endfunction
 " Set up an autocommand to call MaybeInspectLine on CursorHold
 augroup HoverInspect
    autocmd!
-   autocmd CursorHold * call MaybeInspectLine()
+   autocmd CursorHold * call s:MaybeInspectLine()
 augroup END
