@@ -17,3 +17,9 @@ if filereadable(g:denote_md_script)
    nnoremap <Leader>df :DenoteFollowLink<CR>
 endif
 ```
+
+## Credit
+
+Props to
+[u/varsderk](https://www.reddit.com/r/vim/comments/17vm4i8/re_denote_for_vim_fineill_make_a_crappy_version/)
+for introducing me to [denote](https://protesilaos.com/emacs/denote).
