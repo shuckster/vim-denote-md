@@ -18,8 +18,12 @@ if filereadable(g:denote_md_script)
 endif
 ```
 
-## Credit
+## Credits
 
 Props to
 [u/varsderk](https://www.reddit.com/r/vim/comments/17vm4i8/re_denote_for_vim_fineill_make_a_crappy_version/)
 for introducing me to [denote](https://protesilaos.com/emacs/denote).
+
+`vim-denote-md` was written by [Conan Theobald](https://github.com/shuckster/).
+
+I hope you found it useful! If so, I like [coffee ☕️](https://www.buymeacoffee.com/shuckster) :)
