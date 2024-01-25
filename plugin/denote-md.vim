@@ -2,16 +2,16 @@
 " Maintainer:   Conan Theobald <https://github.com/shuckster/vim-denote-md>
 " Version:      1.0.0
 
-" Define a default value for g:denote_shell_script
-if !exists('g:denote_shell_script')
-    let g:denote_shell_script = '~/dotfiles/shell/denote-md.sh'
+" Define a default value for g:denote_md_script
+if !exists('g:denote_md_script')
+    let g:denote_md_script = '~/dotfiles/shell/denote-md.sh'
 endif
 
 function! s:BuildDenoteCommand(...) abort
    let l:action = a:1
    let l:escapedArgs = map(copy(a:000[1:]), 'shellescape(v:val)')
    let l:args = join(l:escapedArgs, ' ')
-   let l:cmd = g:denote_shell_script . ' ' . l:action . ' ' . l:args
+   let l:cmd = g:denote_md_script . ' ' . l:action . ' ' . l:args
    return l:cmd
 endfunction
 
