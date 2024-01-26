@@ -2,6 +2,16 @@
 
 Companion plugin for [denote-md.sh](https://github.com/shuckster/denote-md).
 
+## Installation
+
+```vim
+Plug 'shuckster/vim-denote-md'
+```
+
+Or just use that path in your favourite plugin manager.
+
+Then add the following to your `.vimrc` / `init.vim`:
+
 ```vim
 " Define where your denote-md script is located
 let g:denote_md_script = $DENOTE_MD_SCRIPT_PATH . 'denote-md.sh'
