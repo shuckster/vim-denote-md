@@ -14,7 +14,7 @@ Then add the following to your `.vimrc` / `init.vim`:
 
 ```vim
 " Define where your denote-md script is located
-let g:denote_md_script = $DENOTE_MD_SCRIPT_PATH . 'denote-md.sh'
+let g:denote_md_script = $DENOTE_MD_SCRIPT_PATH
 
 " Add your denote-md remaps
 if filereadable(g:denote_md_script)
@@ -26,6 +26,13 @@ if filereadable(g:denote_md_script)
    nnoremap <Leader>db :DenotePutNoteBacklinksForBuffer<CR>
    nnoremap <Leader>df :DenoteFollowLink<CR>
 endif
+```
+
+Assuming:
+
+```sh
+export DENOTE_MD_SCRIPT_PATH=/path/to/denote-md.sh
+export DENOTE_MD_NOTES_PATH=/path/to/your/notes/folder/
 ```
 
 ## Credits
